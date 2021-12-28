@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# coding: utf-8
 
 import os
 import sys
@@ -26,28 +27,28 @@ def find_note(note_dir, keyword):
     found_notepath = None
     keyword = keyword.lower()
 
-    # $B40A40lCW(B($B%U%!%$%kL>(B)
+    # 完全一致(ファイル名)
     for path in notepaths:
         if path.name.lower() == keyword:
             found_notepath = path
             break
 
     if found_notepath is None:
-        # $B40A40lCW(B($B3HD%;R$r=|$/(B)
+        # 完全一致(拡張子を除く)
         for path in notepaths:
             if path.stem.lower() == keyword:
                 found_notepath = path
                 break
 
     if found_notepath is None:
-        # $BA0J}0lCW(B
+        # 前方一致
         for path in notepaths:
             if path.stem.lower().startswith(keyword):
                 found_notepath = path
                 break
 
     if found_notepath is None:
-        # $BItJ,0lCW(B
+        # 部分一致
         for path in notepaths:
             if keyword in path.stem.lower():
                 found_notepath = path
