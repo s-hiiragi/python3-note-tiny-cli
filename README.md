@@ -4,7 +4,14 @@ A simplified version of `note` command.
 `note` command quickly access to your markdown files.
 
 
+## REQUIRED
+
+- Python 3.5 or later
+
+
 ## INSTALL
+
+### Linux or macOS
 
 1. Run `deploy.sh` to make a link to `note` command into `~/.local/bin`.
 
@@ -17,6 +24,10 @@ $ ./deploy.sh
 ++ pwd
 + ln -s /Users/USERNAME/repo/python3-note-tiny-cli/note /Users/USERNAME/.local/bin/note
 ```
+
+### Windows
+
+1. Set the path of repository cloned into the `PATH` environment variable.
 
 
 ## USAGE
