@@ -1,0 +1,129 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import glob
+import platform
+import argparse
+import subprocess
+from pathlib import Path
+
+
+NOTE_DIR = os.environ.get('NOTE_DIR')
+
+
+def find_notepaths(note_dir):
+    pat = str(Path(note_dir) / '*.md')
+    notepaths = sorted(glob.glob(pat))
+    notepaths = [Path(p) for p in notepaths]
+    return notepaths
+
+
+def find_note(note_dir, keyword):
+
+    notepaths = find_notepaths(note_dir)
+
+    found_notepath = None
+    keyword = keyword.lower()
+
+    # 完全一致(ファイル名)
+    for path in notepaths:
+        if path.name.lower() == keyword:
+            found_notepath = path
+            break
+
+    if found_notepath is None:
+        # 完全一致(拡張子を除く)
+        for path in notepaths:
+            if path.stem.lower() == keyword:
+                found_notepath = path
+                break
+
+    if found_notepath is None:
+        # 前方一致
+        for path in notepaths:
+            if path.stem.lower().startswith(keyword):
+                found_notepath = path
+                break
+
+    if found_notepath is None:
+        # 部分一致
+        for path in notepaths:
+            if keyword in path.stem.lower():
+                found_notepath = path
+                break
+
+    return found_notepath
+
+
+def find_editor_path():
+    editor_path = os.environ.get('EDITOR')
+
+    if editor_path is None:
+        default_editors = {
+                'Windows': 'notepad',
+                'Darwin': 'vim',
+                'Linux': 'vim'
+                }
+
+        pf = platform.system()
+        editor_path = default_editors[pf]
+
+    return editor_path
+
+
+def make_note_path(note_dir, keyword):
+    note_path = Path(note_dir) / keyword
+
+    if note_path.suffix == '':
+        note_path = note_path.with_suffix('.md')
+
+    return note_path
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--note-dir', default=NOTE_DIR)
+    parser.add_argument('-l', '--list-notes', action='store_true')
+    parser.add_argument('keyword', nargs='?')
+    args = parser.parse_args()
+    return args
+
+
+def main():
+    args = parse_args()
+
+    if args.note_dir is None:
+        print('ERROR: note_dir is not found', file=sys.stderr)
+        print('INFO: set the environment variable "NOTE_DIR" or specify the "--note-dir" option', file=sys.stderr)
+        return 1
+
+    if args.list_notes:
+        note_paths = find_notepaths(args.note_dir)
+        
+        for path in note_paths:
+            print(path.stem)
+
+        return 0
+
+    if args.keyword is None:
+        print('ERROR: keyword argument is required', file=sys.stderr)
+        return 1
+
+    note_path = find_note(args.note_dir, args.keyword)
+    if note_path is None:
+        note_path = make_note_path(args.note_dir, args.keyword)
+
+    editor_path = find_editor_path()
+
+    ps_args = [editor_path, note_path]
+    subprocess.run(ps_args)
+
+    return 0
+
+
+if __name__ == '__main__':
+    ret = main()
+    if ret != 0:
+        sys.exit(ret)
+
