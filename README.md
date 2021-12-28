@@ -64,3 +64,8 @@ options:
   -l, --list-notes
 ```
 
+
+## LICENSE
+
+Apache License
+
