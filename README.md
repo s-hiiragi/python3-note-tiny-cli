@@ -4,12 +4,12 @@ A simplified version of `note` command.
 `note` command quickly access to your markdown files.
 
 
-## REQUIRED
+## Requirement
 
 - Python 3.5 or later
 
 
-## INSTALL
+## How to install
 
 ### Linux or macOS
 
@@ -30,7 +30,7 @@ $ ./deploy.sh
 1. Set the path of repository cloned into the `PATH` environment variable.
 
 
-## USAGE
+## Usage
 
 ### Open a markdown file
 
@@ -65,7 +65,7 @@ options:
 ```
 
 
-## LICENSE
+## License
 
 Apache License
 
